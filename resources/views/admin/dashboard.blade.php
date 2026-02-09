@@ -24,7 +24,7 @@
                 <h3 class="font-semibold text-lg mb-2">Manajemen User</h3>
                 <p class="text-sm text-gray-600 mb-4">Kelola admin, staff, dan peminjam</p>
                 <a href="/admin/users"
-                   class="inline-block px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
+                   class="inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-indigo-700">
                     Kelola User
                 </a>
             </div>
