@@ -43,6 +43,7 @@ Route::prefix('admin')->group(function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('alat', \App\Http\Controllers\Admin\AlatController::class);
 });
+
 Route::prefix('admin')->group(function () {
     Route::prefix('alat')->group(function () {
         Route::get('/create', [AlatController::class, 'create'])->name('admin.alat.create');
