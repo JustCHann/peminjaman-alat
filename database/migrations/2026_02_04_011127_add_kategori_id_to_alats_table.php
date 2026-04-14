@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('alats', function (Blueprint $table) {
-            $table->foreignId('kategori_id')->nullable()->constrained('kategoris')->onDelete('set null');
+            $table->foreignId('kategori_id')->after('id')->nullable()->constrained('kategoris')->cascadeOnDelete();
         });
     }
 
@@ -20,5 +20,6 @@ return new class extends Migration
             $table->dropColumn('kategori_id');
         });
     }
+
 };
 

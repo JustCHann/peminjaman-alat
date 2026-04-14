@@ -7,19 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Alat extends Model
 {
-    use HasFactory;
+    protected $fillable = ['nama','kode','jumlah','kategori_id'];
 
-    protected $table = 'alats'; // opsional kalau nama tabel sudah sesuai
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class);
+    }
 
-    protected $fillable = [
-        'nama',
-        'kode',
-        'jumlah',
-    ];
-
-    // Kalau nanti mau ditambahkan kategori, aktifkan relasi ini:
-    // public function kategori()
-    // {
-    //     return $this->belongsTo(Kategori::class, 'kategori_id');
-    // }
+    public function peminjamans()
+    {
+        return $this->hasMany(Peminjaman::class, 'alat_id');
+    }
 }

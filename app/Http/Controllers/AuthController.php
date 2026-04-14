@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -16,31 +15,34 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'login' => 'required|string', // bisa username atau email
+            'login' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $login = $request->input('login');
-        $password = $request->input('password');
+        $login = $request->login;
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        if (Auth::attempt([$field => $login, 'password' => $request->password])) {
 
-        if (Auth::attempt([$fieldType => $login, 'password' => $password])) {
             $request->session()->regenerate();
 
-            $role = auth::user()->role;
+            $user = Auth::user();
 
-            return match($role) {
-                'admin' => redirect()->route('admin.dashboard'),
-                'staff' => redirect()->route('staff.dashboard'),
-                'peminjam' => redirect()->route('peminjam.dashboard'),
-                default => redirect('/login'),
-            };
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'staff') {
+                return redirect()->route('staff.dashboard');
+            } elseif ($user->role === 'peminjam') {
+                return redirect()->route('peminjam.dashboard');
+            }
+
+            Auth::logout();
+            return redirect('/login')->withErrors(['login' => 'Role tidak valid']);
         }
 
         return back()->withErrors([
             'login' => 'Username/email atau password salah!',
-        ])->withInput();
+        ]);
     }
 
     public function logout(Request $request)

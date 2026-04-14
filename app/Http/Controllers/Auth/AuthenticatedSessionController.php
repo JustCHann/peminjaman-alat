@@ -3,56 +3,55 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
-    public function create(): View
+    public function create()
     {
         return view('auth.login');
     }
 
-    /**
-     * Handle an incoming authentication request.
-     */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->authenticate();
+        // validasi
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
+        $user = User::where('email', $request->email)->first();
+
+        if(!$user){
+            return back()->withErrors(['email'=>'Email tidak ditemukan'])->onlyInput('email');
+        }
+
+        if(!Hash::check($request->password, $user->password)){
+            return back()->withErrors(['password'=>'Password salah'])->onlyInput('email');
+        }
+
+        Auth::login($user, true);
         $request->session()->regenerate();
 
-        $user = Auth::user();
-
-        // Aman jika role null / typo
-        return match ($user->role ?? null) {
-
+        // redirect sesuai role
+        return match($user->role){
             'admin' => redirect()->route('admin.dashboard'),
-
-            'petugas' => redirect()->route('petugas.dashboard'),
-
+            'staff' => redirect()->route('staff.dashboard'),
             'peminjam' => redirect()->route('peminjam.dashboard'),
-
-            default => redirect()->route('dashboard'),
+            default => redirect()->route('login')->withErrors('Role tidak valid'),
         };
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
-    public function destroy(Request $request): RedirectResponse
+   public function destroy(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::guard('web')->logout(); // logout user
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $request->session()->invalidate(); // hapus session
+        $request->session()->regenerateToken(); // regenerate CSRF token
 
-        return redirect('/');
+        return redirect('/login'); // arahkan ke halaman login
     }
 }

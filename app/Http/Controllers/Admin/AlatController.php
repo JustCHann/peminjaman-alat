@@ -5,18 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Alat;
+use App\Models\Kategori;
 
 class AlatController extends Controller
 {
     public function index()
     {
-        $alats = Alat::all(); // tanpa relasi kategori karena tidak ada
+        $alats = Alat::with('kategori')->get();
         return view('admin.alat.index', compact('alats'));
     }
 
     public function create()
     {
-        return view('admin.alat.create'); // tidak perlu kategori
+        $kategoris = Kategori::all();
+        return view('admin.alat.create', compact('kategoris'));
     }
 
     public function store(Request $request)
@@ -25,16 +27,18 @@ class AlatController extends Controller
             'nama' => 'required|string|max:255',
             'kode' => 'required|string|max:100',
             'jumlah' => 'required|integer|min:1',
+            'kategori_id' => 'required|exists:kategoris,id',
         ]);
 
-        Alat::create($request->only('nama','kode','jumlah'));
+        Alat::create($request->only('nama','kode','jumlah','kategori_id'));
 
         return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil ditambahkan');
     }
 
     public function edit(Alat $alat)
     {
-        return view('admin.alat.edit', compact('alat'));
+        $kategoris = Kategori::all();
+        return view('admin.alat.edit', compact('alat','kategoris'));
     }
 
     public function update(Request $request, Alat $alat)
@@ -43,9 +47,10 @@ class AlatController extends Controller
             'nama' => 'required|string|max:255',
             'kode' => 'required|string|max:100',
             'jumlah' => 'required|integer|min:1',
+            'kategori_id' => 'required|exists:kategoris,id',
         ]);
 
-        $alat->update($request->only('nama','kode','jumlah'));
+        $alat->update($request->only('nama','kode','jumlah','kategori_id'));
 
         return redirect()->route('admin.alat.index')->with('success', 'Alat berhasil diupdate');
     }
