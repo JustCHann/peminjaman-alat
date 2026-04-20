@@ -52,9 +52,9 @@
                 <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
                 <span>Peminjaman</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3.5 rounded-xl text-indigo-50/90 hover:text-white">
-                <ion-icon name="construct-outline" class="text-xl"></ion-icon>
-                <span>Data Alat</span>
+            <a href="{{ route('staff.denda') }}" class="nav-item flex items-center gap-4 px-4 py-3.5 rounded-xl text-indigo-50/90 hover:text-white">
+                <ion-icon name="cash-outline" class="text-xl"></ion-icon>
+                <span>Kelola Denda</span>
             </a>
         </div>
 
@@ -62,10 +62,10 @@
         <div class="px-5 py-5 border-t border-white/10 mt-2">
             <div class="flex items-center gap-3 mb-3">
                 <div class="h-9 w-9 bg-indigo-500 rounded-full flex items-center justify-center ring-2 ring-white/30">
-                    <span class="text-sm font-semibold text-white">{{ substr(Auth::user()->name ?? 'ST', 0, 2) }}</span>
+                    <span class="text-sm font-semibold text-white">{{ substr(Auth::user()->nama ?? 'ST', 0, 2) }}</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-white truncate">{{ Auth::user()->name ?? 'Staff' }}</p>
+                    <p class="text-sm font-semibold text-white truncate">{{ Auth::user()->nama ?? 'Staff' }}</p>
                     <p class="text-xs text-indigo-200/80 truncate">{{ Auth::user()->email ?? 'staff@alatify.test' }}</p>
                 </div>
             </div>
@@ -250,7 +250,7 @@
                 <p class="text-xs uppercase tracking-wider text-indigo-200/70 px-3 pb-2 font-semibold">Menu utama</p>
                 <a href="#" class="flex items-center gap-4 px-4 py-3 bg-white/15 text-white font-medium rounded-xl">Dashboard</a>
                 <a href="{{ route('staff.peminjaman.index') }}" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Peminjaman</a>
-                <a href="#" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Data Alat</a>
+                <a href="{{ route('staff.denda') }}" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Kelola Denda</a>
                 
                 <div class="mt-6 pt-6 border-t border-white/10">
                     <div class="flex items-center gap-3 mb-3">

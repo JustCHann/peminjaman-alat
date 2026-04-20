@@ -63,9 +63,9 @@
                 </a>
             </div>
 
-            <!-- User profile sidebar -->
+            <!-- User profile sidebar dengan LOGOUT button -->
             <div class="px-5 py-5 border-t border-white/10 mt-2">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 mb-3">
                     <div class="h-9 w-9 bg-indigo-500 rounded-full flex items-center justify-center ring-2 ring-white/30">
                         <span class="text-sm font-semibold text-white">{{ substr(auth()->user()->name ?? 'AD', 0, 2) }}</span>
                     </div>
@@ -73,8 +73,16 @@
                         <p class="text-sm font-semibold text-white truncate">{{ auth()->user()->name ?? 'Admin Utama' }}</p>
                         <p class="text-xs text-indigo-200/80 truncate">{{ auth()->user()->email ?? 'admin@alatify.test' }}</p>
                     </div>
-                    <!-- Logout form -->
                 </div>
+                
+                <!-- TOMBOL LOGOUT -->
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full mt-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-red-500/20 text-white rounded-xl transition-all duration-200 text-sm font-medium border border-white/20 hover:border-red-400/50 group">
+                        <ion-icon name="log-out-outline" class="text-lg group-hover:rotate-12 transition-transform"></ion-icon>
+                        <span>Logout</span>
+                    </button>
+                </form>
             </div>
         </aside>
 

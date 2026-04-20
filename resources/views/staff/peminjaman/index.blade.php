@@ -50,9 +50,10 @@
                 <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
                 <span>Peminjaman</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3.5 rounded-xl text-indigo-50/90 hover:text-white">
-                <ion-icon name="construct-outline" class="text-xl"></ion-icon>
-                <span>Data Alat</span>
+            <a href="{{ route('staff.denda') }}" class="nav-item flex items-center gap-4 px-4 py-3.5 rounded-xl text-indigo-50/90 hover:text-white">
+                <!-- Icon diganti dengan cash-outline yang lebih tepat untuk menu denda -->
+                <ion-icon name="cash-outline" class="text-xl"></ion-icon>
+                <span>Kelola Denda</span>
             </a>
         </div>
 
@@ -87,7 +88,7 @@
                 <button class="md:hidden text-gray-600 hover:text-indigo-700 focus:outline-none" aria-label="Menu" onclick="toggleMobileSidebar()">
                     <ion-icon name="menu-outline" class="text-2xl"></ion-icon>
                 </button>
-                <h1 class="text-lg md:text-2xl font-semibold text-gray-800 tracking-tight">Peminjaman Menunggu Persetujuan</h1>
+                <h1 class="text-lg md:text-2xl font-semibold text-gray-800 tracking-tight">Peminjaman</h1>
             </div>
             
             <form action="{{ route('logout') }}" method="POST" class="md:hidden">
@@ -284,7 +285,7 @@
                 <p class="text-xs uppercase tracking-wider text-indigo-200/70 px-3 pb-2 font-semibold">Menu utama</p>
                 <a href="{{ route('staff.dashboard') }}" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Dashboard</a>
                 <a href="{{ route('staff.peminjaman.index') }}" class="flex items-center gap-4 px-4 py-3 bg-white/15 text-white font-medium rounded-xl">Peminjaman</a>
-                <a href="#" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Data Alat</a>
+                <a href="{{ route('staff.denda') }}" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Kelola Denda</a>
                 
                 <div class="mt-6 pt-6 border-t border-white/10">
                     <div class="flex items-center gap-3 mb-3">

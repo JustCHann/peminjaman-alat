@@ -1,9 +1,4 @@
 <x-app-layout>
-    <!-- Ganti header default dengan desain modern -->
-    <x-slot name="header">
-        <div class="hidden"><!-- kosongkan header default agar tidak double --></div>
-    </x-slot>
-
     <!-- Layout utama dengan sidebar modern (Laravel + Tailwind) -->
     <div class="min-h-screen bg-gray-50/80 flex">
         <!-- ===== SIDEBAR (sama persis dengan desain sebelumnya) ===== -->
@@ -68,9 +63,9 @@
                 </a>
             </div>
 
-            <!-- User profile sidebar -->
+            <!-- User profile sidebar dengan LOGOUT button -->
             <div class="px-5 py-5 border-t border-white/10 mt-2">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 mb-3">
                     <div class="h-9 w-9 bg-indigo-500 rounded-full flex items-center justify-center ring-2 ring-white/30">
                         <span class="text-sm font-semibold text-white">{{ substr(auth()->user()->name ?? 'AD', 0, 2) }}</span>
                     </div>
@@ -78,8 +73,16 @@
                         <p class="text-sm font-semibold text-white truncate">{{ auth()->user()->name ?? 'Admin Utama' }}</p>
                         <p class="text-xs text-indigo-200/80 truncate">{{ auth()->user()->email ?? 'admin@alatify.test' }}</p>
                     </div>
-                    <!-- Logout form -->
                 </div>
+                
+                <!-- TOMBOL LOGOUT -->
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full mt-2 flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-red-500/20 text-white rounded-xl transition-all duration-200 text-sm font-medium border border-white/20 hover:border-red-400/50 group">
+                        <ion-icon name="log-out-outline" class="text-lg group-hover:rotate-12 transition-transform"></ion-icon>
+                        <span>Logout</span>
+                    </button>
+                </form>
             </div>
         </aside>
 
@@ -102,7 +105,14 @@
                     </div>
                 </div>
                 
-                <!-- Search & notifikasi - dikosongkan sesuai contoh -->
+                <!-- Tombol Logout untuk Mobile -->
+                <form action="{{ route('logout') }}" method="POST" class="md:hidden">
+                    @csrf
+                    <button type="submit" class="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-sm font-medium hover:bg-red-100 transition">
+                        <ion-icon name="log-out-outline" class="text-base"></ion-icon>
+                        <span>Logout</span>
+                    </button>
+                </form>
             </header>
 
             <!-- Page content - FORM EDIT ALAT -->
@@ -119,7 +129,7 @@
                     </a>
                 </div>
 
-                <!-- Form Card - Desain sama persis dengan edit user -->
+                <!-- Form Card -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                     <form action="{{ route('admin.alat.update', $alat->id) }}" method="POST" class="p-6 md:p-8">
                         @csrf
@@ -190,6 +200,22 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <!-- Informasi Tambahan -->
+                        <div class="mt-6 p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                            <div class="flex items-start gap-3">
+                                <ion-icon name="information-circle-outline" class="text-blue-600 text-xl flex-shrink-0 mt-0.5"></ion-icon>
+                                <div class="text-xs text-blue-700">
+                                    <p class="font-medium">Informasi:</p>
+                                    <ul class="list-disc list-inside mt-1 space-y-0.5">
+                                        <li>Kode alat harus unik dan tidak boleh sama dengan alat lain</li>
+                                        <li>Jumlah alat tidak boleh negatif</li>
+                                        <li>Pilih kategori yang sesuai untuk memudahkan pencarian</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Action Buttons -->
                         <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-100">
                             <a href="{{ route('admin.alat.index') }}" class="px-6 py-2.5 border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 rounded-xl transition font-medium text-sm">
@@ -215,16 +241,22 @@
     <!-- Mobile sidebar overlay (simple toggle) -->
     <div id="mobileSidebar" class="md:hidden fixed inset-0 z-50 hidden transition-opacity">
         <div class="absolute inset-0 bg-black/30" onclick="toggleMobileSidebar()"></div>
-        <div class="absolute left-0 top-0 h-full w-72 bg-gradient-to-b from-indigo-800 to-indigo-900 shadow-xl">
-            <div class="px-6 pt-8 pb-6 border-b border-white/10 flex items-center gap-3">
-                <div class="h-10 w-10 bg-white/20 rounded-xl flex items-center justify-center">
-                    <ion-icon name="layers-outline" class="text-2xl text-white"></ion-icon>
+        <div class="absolute left-0 top-0 h-full w-72 bg-gradient-to-b from-indigo-800 to-indigo-900 shadow-xl overflow-y-auto">
+            <div class="px-6 pt-8 pb-6 border-b border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 bg-white/20 rounded-xl flex items-center justify-center">
+                        <ion-icon name="layers-outline" class="text-2xl text-white"></ion-icon>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-white">Alatify</h1>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-xl font-bold text-white">Alatify</h1>
-                </div>
+                <button onclick="toggleMobileSidebar()" class="text-white/70 hover:text-white">
+                    <ion-icon name="close-outline" class="text-2xl"></ion-icon>
+                </button>
             </div>
-            <div class="px-4 pt-4">
+            <div class="px-4 pt-4 pb-20">
+                <p class="text-xs uppercase tracking-wider text-indigo-200/70 px-3 pb-2 font-semibold">Menu utama</p>
                 <a href="/admin/dashboard" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Dashboard</a>
                 <a href="{{ route('admin.users.index') }}" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">User</a>
                 <a href="/admin/kategori" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Kategori</a>
@@ -232,6 +264,26 @@
                 <a href="/admin/peminjaman" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Peminjaman</a>
                 <a href="/admin/pengembalian" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Pengembalian</a>
                 <a href="/admin/log-aktivitas" class="flex items-center gap-4 px-4 py-3 text-indigo-50/90 hover:bg-white/10 rounded-xl">Log</a>
+                
+                <!-- Tombol Logout di Mobile Sidebar -->
+                <div class="mt-6 pt-6 border-t border-white/10">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="h-9 w-9 bg-indigo-500 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-semibold text-white">{{ substr(auth()->user()->name ?? 'AD', 0, 2) }}</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-semibold text-white">{{ auth()->user()->name ?? 'Admin' }}</p>
+                            <p class="text-xs text-indigo-200/80">{{ auth()->user()->email ?? 'admin@alatify.test' }}</p>
+                        </div>
+                    </div>
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-white rounded-xl text-sm">
+                            <ion-icon name="log-out-outline" class="text-base"></ion-icon>
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

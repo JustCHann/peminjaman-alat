@@ -17,7 +17,7 @@ use App\Http\Controllers\Staff\StaffController;
 // HALAMAN WELCOME
 // =======================
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 // =======================
@@ -77,4 +77,14 @@ Route::prefix('staff')->name('staff.')->middleware(['auth'])->group(function(){
 
     Route::post('/peminjaman/tolak/{id}', [StaffController::class, 'tolak'])
         ->name('peminjaman.tolak');
+    
+    // ✅ DENDA
+    Route::get('/denda', [StaffController::class, 'denda'])
+        ->name('denda');
+
+    Route::post('/denda/{id}/konfirmasi', [StaffController::class, 'konfirmasiDenda'])
+        ->name('konfirmasiDenda');
+
+    Route::get('/denda/cetak', [StaffController::class, 'cetakDenda'])
+        ->name('denda.cetak');
 });

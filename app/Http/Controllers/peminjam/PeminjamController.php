@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Peminjam;
 
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +35,7 @@ class PeminjamController extends Controller
 
         $request->validate([
             'jumlah' => 'required|integer|min:1',
-            'tanggal_kembali' => 'required|date|after_or_equal:today',
+            'tanggal_kembali' => 'required|date|after_or_equal:today|before_or_equal:' . now()->addDays(7)->toDateString(),
         ]);
 
         if ($request->jumlah > $alat->jumlah) {
@@ -68,38 +69,53 @@ class PeminjamController extends Controller
                         ->with('success', 'Peminjaman berhasil diajukan!');
     }
 
-        public function kembalikan($id)
-{
-    $peminjaman = Peminjaman::with(['alat','detail'])->findOrFail($id);
+            public function kembalikan($id)
+    {
+        $peminjaman = Peminjaman::with(['alat','detail'])->findOrFail($id);
 
-    if ($peminjaman->status !== 'dipinjam') {
-        return back()->with('error', 'Tidak valid');
+        if ($peminjaman->status !== 'dipinjam') {
+            return back()->with('error', 'Silahkan bayar denda.');
+        }
+
+        $denda = $this->hitungDenda($peminjaman);
+
+        DB::transaction(function () use ($peminjaman, $denda) {
+
+            $peminjaman->update([
+                'status' => 'dikembalikan',
+                'denda' => $denda,
+                'status_denda' => $denda > 0 ? 'belum_bayar' : 'sudah_bayar',
+            ]);
+
+            // restore stok
+            if ($peminjaman->alat && $peminjaman->detail) {
+                $peminjaman->alat->increment('jumlah', $peminjaman->detail->jumlah);
+            }
+        });
+
+        return redirect()
+            ->route('peminjam.peminjaman.index')
+            ->with('success', 'Berhasil dikembalikan. Denda: Rp ' . number_format($denda, 0, ',', '.'));
     }
 
-    $today = \Carbon\Carbon::now();
-    $deadline = \Carbon\Carbon::parse($peminjaman->tanggal_kembali);
+    // 🔥 HARUS DI DALAM CLASS INI
+    private function hitungDenda($peminjaman)
+    {
+        if (!$peminjaman->tanggal_kembali) {
+            return 0;
+        }
 
-    // hitung selisih hari
-    $hariTerlambat = $today->gt($deadline)
-        ? $today->diffInDays($deadline)
-        : 0;
+        $deadline = Carbon::parse($peminjaman->tanggal_kembali)->startOfDay();
+        $today = Carbon::today();
 
-    $denda = $hariTerlambat * 1000000;
+        if ($today->lessThanOrEqualTo($deadline)) {
+            return 0;
+        }
 
-    // update stok
-    $peminjaman->alat->increment('jumlah', $peminjaman->detail->jumlah);
+        $hariTerlambat = $deadline->diffInDays($today);
 
-    $peminjaman->update([
-        'status' => 'dikembalikan',
-        'denda' => $denda
-    ]);
-
-    if ($denda > 0) {
-        return back()->with('success', "Dikembalikan dengan denda Rp $denda");
+        return $hariTerlambat * 2000;
     }
-
-    return back()->with('success', 'Dikembalikan tanpa denda');
-}
 
     public function riwayat()
     {

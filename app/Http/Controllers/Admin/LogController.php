@@ -8,16 +8,22 @@ use App\Models\Aktivitas;
 
 class LogController extends Controller
 {
-    /**
-     * Tampilkan daftar log aktivitas untuk dashboard admin.
-     */
+    // LIST LOG
     public function index()
     {
-        // Ambil 10 log terbaru beserta info user
         $logs = Aktivitas::with('user')
             ->latest()
-            ->limit(10)
-            ->get();
+            ->paginate(10);
 
+        return view('admin.logaktifitas.index', compact('logs'));
+    }
+
+    // HELPER: SIMPAN LOG (BIAR MUDAH DIPAKAI DI CONTROLLER LAIN)
+    public static function record($userId, $aktivitas)
+    {
+        return Aktivitas::create([
+            'user_id' => $userId,
+            'aktivitas' => $aktivitas,
+        ]);
     }
 }

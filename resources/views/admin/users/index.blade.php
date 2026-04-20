@@ -59,7 +59,7 @@
                 </a>
                 
                 <!-- Log Aktivitas -->
-                <a href="/admin/log-aktivitas" class="nav-item flex items-center gap-4 px-4 py-3.5 rounded-xl text-indigo-50/90 hover:text-white hover:bg-white/10 transition">
+                <a href="/admin/logaktifitas" class="nav-item flex items-center gap-4 px-4 py-3.5 rounded-xl text-indigo-50/90 hover:text-white hover:bg-white/10 transition">
                     <ion-icon name="document-text-outline" class="text-xl"></ion-icon>
                     <span>Log Aktivitas</span>
                 </a>

@@ -5,13 +5,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Alat;
 use App\Models\DetailPeminjaman;
+use Carbon\Carbon;
 
 class Peminjaman extends Model
 {
     protected $table = 'peminjamen';
 
     protected $fillable = [
-        'user_id', 'alat_id', 'tanggal_pinjam', 'tanggal_kembali', 'status'
+        'user_id', 'alat_id', 'tanggal_pinjam', 'tanggal_kembali', 'status' , 'denda' , 'status_denda'
     ];
 
     // RELASI USER
@@ -31,4 +32,10 @@ class Peminjaman extends Model
     {
         return $this->hasOne(DetailPeminjaman::class, 'peminjaman_id');
     }
+    public function getIsTerlambatAttribute()
+{
+    return $this->status === 'dipinjam'
+        && Carbon::parse($this->tanggal_kembali)->startOfDay()
+            ->lt(Carbon::today());
+}
 }

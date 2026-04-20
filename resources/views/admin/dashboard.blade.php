@@ -63,7 +63,7 @@
                 <ion-icon name="arrow-undo-outline" class="text-xl"></ion-icon>
                 <span>Pengembalian</span>
             </a>
-            <a href="#" class="nav-item flex items-center gap-4 px-4 py-3.5 rounded-xl text-indigo-50/90 hover:text-white">
+            <a href="{{ route('admin.logaktifitas.index') }}" class="nav-item flex items-center gap-4 px-4 py-3.5 rounded-xl text-indigo-50/90 hover:text-white">
                 <ion-icon name="document-text-outline" class="text-xl"></ion-icon>
                 <span>Log Aktivitas</span>
             </a>

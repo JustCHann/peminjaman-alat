@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Aktivitas extends Model
 {
-    protected $table = 'logs'; // pakai tabel logs yang sudah ada
+    protected $table = 'logs';
     protected $primaryKey = 'id';
 
     protected $fillable = [
